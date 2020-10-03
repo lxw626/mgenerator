@@ -19,6 +19,7 @@ export default {
 // 数据库管理
   addDatabaseMs: (databaseMs) => ajax(BASE_URL + '/DatabaseMs/addDatabaseMs', databaseMs, "POST"),
   deleteDatabaseMs: (id) => ajax(BASE_URL + '/DatabaseMs/deleteDatabaseMs', {id}),
+  getMgConfig: (databaseMs) => ajax(BASE_URL + '/generator/getMgConfig',  databaseMs, "POST"),
 }
 
 

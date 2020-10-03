@@ -35,23 +35,21 @@
       @node-contextmenu="nodeContextMenuHandler"
       show-checkbox>
     </el-tree>
-    <el-popover
-      placement="bottom"
-      width="100"
-      trigger="click"
-      :visible-arrow="false"
-      :value ="showDatabaseMsMenu">
-      <div class="line_file">
-        <el-button size="mini" class="line_file_content" @click="addDatabaseMsMenuHandler">新建连接</el-button>
-        <el-button  size="mini" class="line_file_content" @click="editDatabaseMsMenuHandler">编辑连接</el-button>
-        <el-button  size="mini" class="line_file_content" @click="deleteDatabaseMsMenuHandler">删除连接</el-button>
+    <div v-show="showDatabaseMsMenu" :style="{zIndex:'100',background:'#dddddd',border:'1px solid #000',position: 'fixed',top: databaseMsMenuY + 'px',left: databaseMsMenuX + 'px'}">
+      <i class="el-icon-close" style="float:right;margin: 10px" @click="showDatabaseMsMenu=false"></i>
+      <div style="width: 140px;margin-bottom: 20px;">
+        <el-button size="small" style="display: block;margin-top:30px; margin-left:30px" @click="addDatabaseMsMenuHandler">新建连接</el-button>
+        <el-button  size="small" style="display: block;margin-top:10px; margin-left:30px;" @click="editDatabaseMsMenuHandler">编辑连接</el-button>
+        <el-button  size="small" style="display: block;margin-top:10px; margin-left:30px" @click="deleteDatabaseMsMenuHandler">删除连接</el-button>
       </div>
-    </el-popover>
+    </div>
+    <TableMgConfig ref="TableMgConfig"></TableMgConfig>
   </div>
 </template>
 
 <script>
   import Api from '../../api'
+  import TableMgConfig from '../TableMgConfig/TableMgConfig.vue'
 
 
   export default {
@@ -70,15 +68,20 @@
         props: {
           label: 'nodeName',
           children: 'children',
-          isLeaf: 'isLeaf'
+          isLeaf: 'leaf'
         },
         dbData: [],
+        databaseMsMenuX:0,
+        databaseMsMenuY:0,
 
       }
     },
 
     created() {
       this.getDatabaseMsNodes()
+    },
+    components:{
+      TableMgConfig
     },
     methods: {
       async loadNode(node, resolve) {
@@ -95,7 +98,16 @@
       nodeContextMenuHandler(event,node){
         console.log(event,node)
         this.contextMenuNode = node
-        this.showDatabaseMsMenu = true;
+        this.databaseMsMenuX=event.clientX;
+        this.databaseMsMenuY=event.clientY
+
+        if(node.leaf === true){
+          this.showDatabaseMsMenu = false;
+          this.$refs.TableMgConfig.showTableMgConfigDialog = true
+        }else {
+          this.$refs.TableMgConfig.showTableMgConfigDialog = false
+          this.showDatabaseMsMenu = true;
+        }
 
       },
       addDatabaseMsMenuHandler(){
@@ -159,7 +171,8 @@
           let tableName = node.nodeName;
           let dbId = node.nodeInfo.dbId;
           let databaseMs = {tableName, dbId}
-          this.changeDatabaseMs(databaseMs)
+          this.$store.dispatch("getMgConfig",databaseMs)
+          this.$refs.TableMgConfig.showTableMgConfigDialog=true
         } else {
 
         }
@@ -170,24 +183,17 @@
           this.dbData = result.data
         }
       },
-      changeDatabaseMs(databaseMs){
-        this.$store.dispatch("changeDatabaseMs",databaseMs)
+      getMousePos(event) {
+        var e = event || window.event;
+        return {"x": e.clientX, "y": clientY};
       }
-    }
+
+  }
   }
 </script>
 
 <style scoped>
-  .line_file {
-    display: block;
-    white-space: nowrap;
-    border: 1px dashed #ddd;
-  }
 
-  .line_file_content {
-    display: block;
-    margin: 10px;
-  }
   .xxx{
   /*设置内部填充为0，几个布局元素之间没有间距*/
     padding: 0px;

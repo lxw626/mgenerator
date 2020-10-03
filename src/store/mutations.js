@@ -7,17 +7,19 @@ Vue.use(Vuex)
 import {
   GET_CONTENT,
   CHANGE_DATABASEMS,
-  SAVE_MGCONFIG_2_STATE
+  SAVE_MGCONFIG_2_STATE,
+  GET_MGCONFIG
 } from './mutation-types'
 
 export default {
   [GET_CONTENT] (state, {content}) {
     state.content = content
   },
-  [CHANGE_DATABASEMS] (state, {databaseMs}) {
+  /*[CHANGE_DATABASEMS] (state, {databaseMs}) {
     state.mgConfig.dbId = databaseMs.dbId
     state.mgConfig.tableName = databaseMs.tableName
-  },
+  },*/
+
   [SAVE_MGCONFIG_2_STATE] (state, {mgConfig}) {
     for (let key in mgConfig){
       let value = mgConfig[key];

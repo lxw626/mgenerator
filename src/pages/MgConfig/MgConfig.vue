@@ -17,6 +17,9 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="tableName">
+          <el-input v-model="mgConfig.tableName" disabled placeholder="tableName"></el-input>
+        </el-form-item>
         <el-form-item label="entityName">
           <el-input v-model="mgConfig.entityName" placeholder="entityName"></el-input>
         </el-form-item>
@@ -24,7 +27,10 @@
           <el-input v-model="mgConfig.entityName4LowerCamel" placeholder="entityName4LowerCamel"></el-input>
         </el-form-item>
         <el-form-item label="entityName4UpperCamel">
-          <el-input v-model="mgConfig.dbUserName" entityName4UpperCamel="entityName4UpperCamel"></el-input>
+          <el-input v-model="mgConfig.entityName4UpperCamel" placeholder="entityName4UpperCamel"></el-input>
+        </el-form-item>
+        <el-form-item label="defaultSort">
+          <el-input v-model="mgConfig.defaultSort" placeholder="defaultSort"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

@@ -4,7 +4,8 @@
 import {
   GET_CONTENT,
   CHANGE_DATABASEMS,
-  SAVE_MGCONFIG_2_STATE
+  SAVE_MGCONFIG_2_STATE,
+  GET_MGCONFIG
 } from './mutation-types'
 import Api from '../api'
 
@@ -19,10 +20,20 @@ export default {
       commit(GET_CONTENT, {content})
     }
   },
-  async changeDatabaseMs({commit},databaseMs) {
+  async getMgConfig({commit},databaseMs) {
+    // 发送异步ajax请求
+    const result = await Api.getMgConfig(databaseMs)
     // 提交一个mutation
-    commit(CHANGE_DATABASEMS, {databaseMs})
+    if (result.success) {
+      const mgConfig = result.data
+      console.log(mgConfig)
+      commit(SAVE_MGCONFIG_2_STATE, {mgConfig})
+    }
   },
+  // async changeDatabaseMs({commit},databaseMs) {
+  //   // 提交一个mutation
+  //   commit(CHANGE_DATABASEMS, {databaseMs})
+  // },
   saveMgConfig2State({commit},mgConfig) {
     // 提交一个mutation
     commit(SAVE_MGCONFIG_2_STATE, {mgConfig})

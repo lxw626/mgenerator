@@ -9,8 +9,13 @@ export default {
     vueContent:[]
   },
   mgConfig:{
+    dbId:'',
     tableName:'',
-    dbId:''
+    entityName:'',
+    entityName4LowerCamel:'',
+    entityName4UpperCamel:'',
+    defaultSort:'',
+    columns:[],
   }
 
 }

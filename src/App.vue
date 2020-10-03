@@ -46,12 +46,14 @@
       return {
         centerDialogVisible: false,
         mgConfig:{
-          author:'荔谢文',
+          author:'九转成圣',
           group:'com.example.demo',
         },
       }
     },
-
+    mounted(){
+      this.saveMgConfig2State();
+    },
     methods: {
       showMgConfigDialog() {
         this.$refs.MgConfig.showMgConfigDialog=true;

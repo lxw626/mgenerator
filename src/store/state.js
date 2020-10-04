@@ -16,6 +16,7 @@ export default {
     entityName4UpperCamel:'',
     defaultSort:'',
     columns:[],
-  }
+  },
+  mgConfigs:{}
 
 }

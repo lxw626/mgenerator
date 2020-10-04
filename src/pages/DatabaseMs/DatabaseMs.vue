@@ -1,6 +1,7 @@
 <template>
   <div class="xxx">
     <el-button type="text" @click="showAddDatabaseMsDialog = true">新建连接</el-button>
+    <span class="el-checkbox__label" style="margin-left: 15px">显示表级配置</span><el-checkbox v-model="showTableMgConfig"/>
     <el-dialog
       title="新建连接"
       :visible.sync="showAddDatabaseMsDialog"
@@ -33,7 +34,8 @@
       lazy
       @check="checkHandler"
       @node-contextmenu="nodeContextMenuHandler"
-      show-checkbox>
+      show-checkbox
+    style="background: #E3EDCD">
     </el-tree>
     <div v-show="showDatabaseMsMenu" :style="{zIndex:'100',background:'#dddddd',border:'1px solid #000',position: 'fixed',top: databaseMsMenuY + 'px',left: databaseMsMenuX + 'px'}">
       <i class="el-icon-close" style="float:right;margin: 10px" @click="showDatabaseMsMenu=false"></i>
@@ -58,6 +60,7 @@
       return {
         showAddDatabaseMsDialog: false,
         showDatabaseMsMenu:false,
+        showTableMgConfig:false,
         contextMenuNode:{},
         databaseMs: {
           dbAlias: "我是别名",
@@ -102,8 +105,10 @@
         this.databaseMsMenuY=event.clientY
 
         if(node.leaf === true){
-          this.showDatabaseMsMenu = false;
-          this.$refs.TableMgConfig.showTableMgConfigDialog = true
+          if(this.showTableMgConfig){
+            this.showDatabaseMsMenu = false;
+            this.$refs.TableMgConfig.showTableMgConfigDialog = true
+          }
         }else {
           this.$refs.TableMgConfig.showTableMgConfigDialog = false
           this.showDatabaseMsMenu = true;
@@ -172,7 +177,9 @@
           let dbId = node.nodeInfo.dbId;
           let databaseMs = {tableName, dbId}
           this.$store.dispatch("getMgConfig",databaseMs)
-          this.$refs.TableMgConfig.showTableMgConfigDialog=true
+          if(this.showTableMgConfig){
+            this.$refs.TableMgConfig.showTableMgConfigDialog=true
+          }
         } else {
 
         }

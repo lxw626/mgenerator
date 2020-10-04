@@ -62,19 +62,20 @@
 
 <script>
   import {mapState} from 'vuex'
+
   export default {
     name: "ContentView",
-    computed:{
+    computed: {
       ...mapState(['content'])
     },
-    data(){
-      return{
+    data() {
+      return {
         activeName: 'entity',
       }
     }
   }
 </script>
 
-<style scoped>
+<style>
 
 </style>

@@ -14,6 +14,7 @@ export default {
   addMgGlobalConfig: (mgGlobalConfig) => ajax(BASE_URL + '/addMgGlobalConfig', mgGlobalConfig, "POST"),
   testConnect: (dataSourceMs) => ajax(BASE_URL + '/DatabaseMs/testConnect', dataSourceMs, "POST"),
   getContent: (mgConfig) => ajax(BASE_URL + '/generator/getContent', mgConfig, "POST"),
+  getContents: (mgConfigs) => ajax(BASE_URL + '/generator/getContents', mgConfigs, "POST"),
   getDatabaseMsNodes: (databaseMs) => ajax(BASE_URL + '/DatabaseMs/getDatabaseMsNodes',databaseMs,"POST"),
   gettableNames: (dbId) => ajax(BASE_URL + '/DatabaseMs/gettableNames', {dbId}),
 // 数据库管理

@@ -8,6 +8,8 @@ export default {
     xmlContent:[],
     vueContent:[]
   },
+  contents: {
+  },
   mgConfig:{
     dbId:'',
     tableName:'',
@@ -17,6 +19,8 @@ export default {
     defaultSort:'',
     columns:[],
   },
-  mgConfigs:{}
+  mgConfigs:{},
+  globalMgConfig:{},
+  contentList:[]
 
 }

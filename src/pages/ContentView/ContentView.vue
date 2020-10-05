@@ -5,7 +5,9 @@
         type="textarea"
         autosize
         placeholder="请输入内容"
-        v-model="content.vueContent.join('\n')">
+        @change="changeHandler"
+        v-model="xxx"
+      >
       </el-input>
     </el-tab-pane>
     <el-tab-pane label="entity" name="entity">
@@ -66,11 +68,20 @@
   export default {
     name: "ContentView",
     computed: {
-      ...mapState(['content'])
+      ...mapState(['content','contents']),
     },
+
     data() {
       return {
         activeName: 'entity',
+        names:['张三','李四'],
+        xxx:''
+      }
+    },
+    methods:{
+      changeHandler(){
+        let strings = this.xxx.split("\n");
+
       }
     }
   }

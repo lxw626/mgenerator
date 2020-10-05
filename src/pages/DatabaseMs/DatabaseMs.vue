@@ -53,7 +53,6 @@
   import Api from '../../api'
   import TableMgConfig from '../TableMgConfig/TableMgConfig.vue'
 
-
   export default {
     name: "DatabaseMs",
     data() {
@@ -91,7 +90,6 @@
         if (node.level === 0) {
           return resolve(this.dbData);
         } else {
-          console.log(node.data)
           let res = await Api.gettableNames(node.data.nodeInfo.dbId);
           if (res.success) {
             resolve(res.data);
@@ -99,7 +97,6 @@
         }
       },
       nodeContextMenuHandler(event,node){
-        console.log(event,node)
         this.contextMenuNode = node
         this.databaseMsMenuX=event.clientX;
         this.databaseMsMenuY=event.clientY
@@ -107,6 +104,7 @@
         if(node.leaf === true){
           if(this.showTableMgConfig){
             this.showDatabaseMsMenu = false;
+            this.$refs.TableMgConfig.tableName = node.nodeName
             this.$refs.TableMgConfig.showTableMgConfigDialog = true
           }
         }else {
@@ -125,7 +123,6 @@
       },
       deleteDatabaseMsMenuHandler(){
         let node = this.contextMenuNode;
-        console.log(node)
         this.showDatabaseMsMenu = false;
         this.$confirm(`确认删除${node.label}?`, '提示', {
           confirmButtonText: '确定',
@@ -157,7 +154,6 @@
       },
       addDatabaseMs() {
         Api.addDatabaseMs(this.databaseMs).then(res => {
-          console.log(res)
           this.getDatabaseMsNodes()
           if(res.success){
             this.$message({
@@ -171,17 +167,17 @@
         })
       },
       checkHandler(node, checkedInfo) {
-        let checked = checkedInfo.checkedNodes.filter(item => item.label == node.label).length == 1;
+        let checked = checkedInfo.checkedNodes.filter(item => item.nodeName == node.nodeName).length == 1;
+        let tableName = node.nodeName;
         if (checked) {
-          let tableName = node.nodeName;
           let dbId = node.nodeInfo.dbId;
-          let databaseMs = {tableName, dbId}
-          this.$store.dispatch("getMgConfig",databaseMs)
+          this.$store.dispatch("getMgConfig",{tableName, dbId})
           if(this.showTableMgConfig){
+            this.$refs.TableMgConfig.tableName=tableName
             this.$refs.TableMgConfig.showTableMgConfigDialog=true
           }
         } else {
-
+          this.$store.dispatch("removeMgConfigFromState",tableName)
         }
       },
       async getDatabaseMsNodes() {

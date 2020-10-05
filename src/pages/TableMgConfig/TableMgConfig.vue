@@ -7,24 +7,24 @@
     top="20px"
     center>
 
-    <el-form :model="mgConfig" inline label-width="200px">
+    <el-form :model="tableMgConfig" inline label-width="200px">
       <el-form-item label="tableName">
-        <el-input size="mini" disabled v-model="mgConfig.tableName"  placeholder="tableName"></el-input>
+        <el-input size="mini" disabled v-model="tableMgConfig.tableName" placeholder="tableName"></el-input>
       </el-form-item>
       <el-form-item label="entityName">
-        <el-input size="mini" v-model="mgConfig.entityName" placeholder="entityName"></el-input>
+        <el-input size="mini" v-model="tableMgConfig.entityName" placeholder="entityName"></el-input>
       </el-form-item>
       <el-form-item label="entityName4LowerCamel">
-        <el-input size="mini" v-model="mgConfig.entityName4LowerCamel" placeholder="entityName4LowerCamel"></el-input>
+        <el-input size="mini" v-model="tableMgConfig.entityName4LowerCamel" placeholder="entityName4LowerCamel"></el-input>
       </el-form-item>
       <el-form-item label="entityName4UpperCamel">
-        <el-input size="mini" v-model="mgConfig.entityName4UpperCamel" placeholder="entityName4UpperCamel"></el-input>
+        <el-input size="mini" v-model="tableMgConfig.entityName4UpperCamel" placeholder="entityName4UpperCamel"></el-input>
       </el-form-item>
       <el-form-item label="defaultSort">
-        <el-input size="mini" v-model="mgConfig.defaultSort" placeholder="defaultSort"></el-input>
+        <el-input size="mini" v-model="tableMgConfig.defaultSort" placeholder="defaultSort"></el-input>
       </el-form-item>
     </el-form>
-    <el-table :data="mgConfig.columns" style="width: 100%" max-height="350">
+    <el-table :data="tableMgConfig.columns" style="width: 100%" max-height="350">
       <el-table-column label="columnName" prop="columnName" width="180"></el-table-column>
       <el-table-column label="columnComment" prop="columnComment" width="180"></el-table-column>
       <el-table-column label="columnType" prop="columnType" width="120"></el-table-column>
@@ -51,7 +51,7 @@
     </el-table>
     <span slot="footer" class="dialog-footer">
       <el-button size="mini" @click="saveMgConfig2State">确认</el-button>
-      <el-button size="mini" type="primary" @click="showTableMgConfigDialog = false">取消</el-button>
+      <el-button size="mini" type="primary" @click="revertMgConfig2State">取消</el-button>
     </span>
   </el-dialog>
 </template>
@@ -64,16 +64,40 @@
     data() {
       return {
         showTableMgConfigDialog: false,
+        tableName: '',
+        tableMgConfig: {},
       }
     },
     computed: {
-      ...mapState(['mgConfig'])
+      ...mapState(['mgConfigs'])
+    },
+    watch:{
+      mgConfigs:{
+        handler:'initTableMgConfig',
+        deep:true
+      }
+
     },
     methods: {
-      saveMgConfig2State() {
-        // this.$store.dispatch("saveMgConfig2State",this.mgConfig)
+
+      revertMgConfig2State() {
+        this.initTableMgConfig()
         this.showTableMgConfigDialog = false
-      }
+      },
+      saveMgConfig2State() {
+        let tableMgConfig = this.tableMgConfig;
+        let tableName = tableMgConfig.tableName;
+        this.$store.dispatch("saveMgConfig2State", {tableName, mgConfig: tableMgConfig})
+        this.showTableMgConfigDialog = false
+      },
+      initTableMgConfig() {
+        let mgConfigs = JSON.parse(JSON.stringify(this.mgConfigs));
+        let tableName = this.tableName;
+        let mgConfig = mgConfigs[tableName];
+        if (tableName != '' && mgConfig != null) {
+          this.tableMgConfig = mgConfig
+        }
+      },
     }
   }
 </script>

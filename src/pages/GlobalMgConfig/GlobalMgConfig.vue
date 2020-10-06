@@ -6,7 +6,7 @@
       width="60%"
       center>
 
-      <el-form :model="globalMgConfig" label-width="200px">
+      <el-form :model="myGlobalMgConfig" label-width="200px">
         <el-form-item label="我的配置列表">
           <el-select v-model="value" placeholder="请选择">
             <el-option
@@ -18,58 +18,61 @@
           </el-select>
         </el-form-item>
         <el-form-item label="author">
-          <el-input v-model="globalMgConfig.author"></el-input>
-        </el-form-item>
-        <el-form-item label="entityPackage">
-          <el-input v-model="globalMgConfig.entityPackage"></el-input>
-        </el-form-item>
-        <el-form-item label="controllerPackage">
-          <el-input v-model="globalMgConfig.controllerPackage"></el-input>
-        </el-form-item>
-        <el-form-item label="servicePackage">
-          <el-input v-model="globalMgConfig.servicePackage"></el-input>
-        </el-form-item>
-        <el-form-item label="mapperPackage">
-          <el-input v-model="globalMgConfig.mapperPackage"></el-input>
-        </el-form-item>
-        <el-form-item label="basicEntity">
-          <el-input v-model="globalMgConfig.basicEntity"></el-input>
-        </el-form-item>
-        <el-form-item label="sortInfo">
-          <el-input v-model="globalMgConfig.sortInfo"></el-input>
-        </el-form-item>
-        <el-form-item label="sortCode">
-          <el-input v-model="globalMgConfig.sortCode"></el-input>
+          <el-input v-model="myGlobalMgConfig.author"></el-input>
         </el-form-item>
         <div style="margin-bottom: 22px;">
           <label class="myLabel">lombok</label>
-          <el-checkbox v-model="globalMgConfig.lombok" style="float: left;"/>
+          <el-checkbox v-model="myGlobalMgConfig.lombok" style="float: left;"/>
           <label class="myLabel">fieldComment</label>
-          <el-checkbox v-model="globalMgConfig.fieldComment" style="float: left;"/>
+          <el-checkbox v-model="myGlobalMgConfig.fieldComment" style="float: left;"/>
           <label class="myLabel">toStringMethod</label>
-          <el-checkbox v-model="globalMgConfig.toStringMethod" style="float: left;"/>
+          <el-checkbox v-model="myGlobalMgConfig.toStringMethod" style="float: left;"/>
         </div>
+        <el-form-item label="numberType">
+          <el-select v-model="myGlobalMgConfig.numberType" placeholder="请选择">
+            <el-option key="BigDecimal" label="BigDecimal" value="BigDecimal"/>
+            <el-option key="Double" label="Double" value="Double"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="entityPackage">
+          <el-input v-model="myGlobalMgConfig.entityPackage"></el-input>
+        </el-form-item>
+        <el-form-item label="controllerPackage">
+          <el-input v-model="myGlobalMgConfig.controllerPackage"></el-input>
+        </el-form-item>
+        <el-form-item label="servicePackage">
+          <el-input v-model="myGlobalMgConfig.servicePackage"></el-input>
+        </el-form-item>
+        <el-form-item label="mapperPackage">
+          <el-input v-model="myGlobalMgConfig.mapperPackage"></el-input>
+        </el-form-item>
+        <el-form-item label="basicEntity">
+          <el-input v-model="myGlobalMgConfig.basicEntity"></el-input>
+        </el-form-item>
+        <el-form-item label="sortInfo">
+          <el-input v-model="myGlobalMgConfig.sortInfo"></el-input>
+        </el-form-item>
+        <el-form-item label="sortCode">
+          <el-input v-model="myGlobalMgConfig.sortCode"></el-input>
+        </el-form-item>
         <el-form-item label="createTimeFormat">
-          <el-input v-model="globalMgConfig.createTimeFormat"></el-input>
+          <el-input v-model="myGlobalMgConfig.createTimeFormat"></el-input>
         </el-form-item>
         <el-form-item label="mResponseNameFull">
-          <el-input v-model="globalMgConfig.mResponseNameFull"></el-input>
-        </el-form-item>
-        <el-form-item label="numberType">
-          <el-input v-model="globalMgConfig.numberType"></el-input>
+          <el-input v-model="myGlobalMgConfig.mResponseNameFull"></el-input>
         </el-form-item>
         <el-form-item label="pageSizes">
-          <el-input v-model="globalMgConfig.pageSizes"></el-input>
+          <el-input v-model="myGlobalMgConfig.pageSizes"></el-input>
         </el-form-item>
         <el-form-item label="pageSize">
-          <el-input v-model="globalMgConfig.pageSize"></el-input>
+          <el-input v-model="myGlobalMgConfig.pageSize"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="saveGlobalMgConfig2State">确认</el-button>
         <el-button @click="showGlobalMgConfigDialog = false">保存配置</el-button>
         <el-button @click="showGlobalMgConfigDialog = false">设为默认配置</el-button>
-        <el-button type="primary" @click="showGlobalMgConfigDialog = false">取消</el-button>
+        <el-button type="primary" @click="revertGlobalMgConfig2State">取消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -83,6 +86,7 @@
     data() {
       return {
         showGlobalMgConfigDialog: false,
+        myGlobalMgConfig:{},
         options: [{
           value: '选项1',
           label: '黄金糕'
@@ -105,11 +109,24 @@
     computed: {
       ...mapState(['globalMgConfig'])
     },
+    watch:{
+      globalMgConfig:{
+        handler:'initMyGlobalMgConfig',
+        deep:true
+      }
+    },
     methods: {
       saveGlobalMgConfig2State() {
-        this.$store.dispatch("saveGlobalMgConfig2State", this.globalMgConfig)
+        this.$store.dispatch("saveGlobalMgConfig2State", this.myGlobalMgConfig)
         this.showGlobalMgConfigDialog = false
-      }
+      },
+      initMyGlobalMgConfig() {
+        this.myGlobalMgConfig = JSON.parse(JSON.stringify(this.globalMgConfig));
+      },
+      revertGlobalMgConfig2State() {
+        this.initMyGlobalMgConfig()
+        this.showGlobalMgConfigDialog = false
+      },
     }
   }
 </script>

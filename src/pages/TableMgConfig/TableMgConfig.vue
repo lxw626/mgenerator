@@ -9,7 +9,7 @@
 
     <el-form :model="tableMgConfig" inline label-width="200px">
       <el-form-item label="tableName">
-        <el-input size="mini" disabled v-model="tableMgConfig.tableName" placeholder="tableName"></el-input>
+        <el-input size="mini" disabled v-model="tableName" placeholder="tableName"></el-input>
       </el-form-item>
       <el-form-item label="entityName">
         <el-input size="mini" v-model="tableMgConfig.entityName" placeholder="entityName"></el-input>
@@ -75,8 +75,10 @@
       mgConfigs:{
         handler:'initTableMgConfig',
         deep:true
+      },
+      tableName:{
+        handler:'initTableMgConfig',
       }
-
     },
     methods: {
 
@@ -94,8 +96,10 @@
         let mgConfigs = JSON.parse(JSON.stringify(this.mgConfigs));
         let tableName = this.tableName;
         let mgConfig = mgConfigs[tableName];
-        if (tableName != '' && mgConfig != null) {
+        if (mgConfig != null) {
           this.tableMgConfig = mgConfig
+        }else{
+          this.tableMgConfig = {}
         }
       },
     }

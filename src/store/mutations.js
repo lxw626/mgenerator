@@ -5,7 +5,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
 import {
-  SET_CONTENT,
   SAVE_MGCONFIG_2_STATE,
   SAVE_GLOBAL_MGCONFIG_2_STATE,
   GET_GLOBAL_MGCONFIG,
@@ -14,9 +13,6 @@ import {
 } from './mutation-types'
 
 export default {
-  [SET_CONTENT] (state, {content}) {
-    state.content = content
-  },
   [GET_CONTENTS] (state, {contents}) {
     state.contents = contents
     if(Object.keys(contents).length > 0){

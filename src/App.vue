@@ -73,7 +73,7 @@
     },
     methods: {
       showGlobalMgConfigDialog() {
-        this.$store.dispatch('getGlobalMgConfig', {group: this.globalMgConfig.group})
+        // this.$store.dispatch('getGlobalMgConfig', {group: this.globalMgConfig.group})
         this.$refs.GlobalMgConfig.showGlobalMgConfigDialog = true;
       },
       getContents() {
@@ -83,7 +83,8 @@
         this.$store.dispatch("getGlobalMgConfig", this.globalMgConfig)
       },
       contentChange(){
-        this.$store.dispatch("setContent", this.content.content)
+        this.$store.dispatch('getGlobalMgConfig', {group: this.globalMgConfig.group})
+        // this.$store.dispatch("setContent", this.content.content)
       }
     },
     components: {

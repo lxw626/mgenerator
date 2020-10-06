@@ -1,7 +1,8 @@
 <template>
   <div class="xxx">
     <el-button type="text" @click="showAddDatabaseMsDialog = true">新建连接</el-button>
-    <span class="el-checkbox__label" style="margin-left: 15px">显示表级配置</span><el-checkbox v-model="showTableMgConfig"/>
+    <span class="el-checkbox__label" style="margin-left: 15px">显示表级配置</span>
+    <el-checkbox v-model="showTableMgConfig"/>
     <el-dialog
       title="新建连接"
       :visible.sync="showAddDatabaseMsDialog"
@@ -35,14 +36,15 @@
       @check="checkHandler"
       @node-contextmenu="nodeContextMenuHandler"
       show-checkbox
-    style="background: #E3EDCD">
+      style="background: #E3EDCD">
     </el-tree>
-    <div v-show="showDatabaseMsMenu" :style="{zIndex:'100',background:'#dddddd',border:'1px solid #000',position: 'fixed',top: databaseMsMenuY + 'px',left: databaseMsMenuX + 'px'}">
+    <div v-show="showDatabaseMsMenu"
+         :style="{zIndex:'100',background:'#dddddd',border:'1px solid #000',position: 'fixed',top: databaseMsMenuY + 'px',left: databaseMsMenuX + 'px'}">
       <i class="el-icon-close" style="float:right;margin: 10px" @click="showDatabaseMsMenu=false"></i>
-      <div style="width: 140px;margin-bottom: 20px;">
-        <el-button size="small" style="display: block;margin-top:30px; margin-left:30px" @click="addDatabaseMsMenuHandler">新建连接</el-button>
-        <el-button  size="small" style="display: block;margin-top:10px; margin-left:30px;" @click="editDatabaseMsMenuHandler">编辑连接</el-button>
-        <el-button  size="small" style="display: block;margin-top:10px; margin-left:30px" @click="deleteDatabaseMsMenuHandler">删除连接</el-button>
+      <div style="width: 140px;margin: 30px auto;">
+        <el-button size="small" class="menu-button" @click="addDatabaseMsMenuHandler">新建连接</el-button>
+        <el-button size="small" class="menu-button" @click="editDatabaseMsMenuHandler">编辑连接</el-button>
+        <el-button size="small" class="menu-button" @click="deleteDatabaseMsMenuHandler">删除连接</el-button>
       </div>
     </div>
     <TableMgConfig ref="TableMgConfig"></TableMgConfig>
@@ -58,9 +60,9 @@
     data() {
       return {
         showAddDatabaseMsDialog: false,
-        showDatabaseMsMenu:false,
-        showTableMgConfig:false,
-        contextMenuNode:{},
+        showDatabaseMsMenu: false,
+        showTableMgConfig: false,
+        contextMenuNode: {},
         databaseMs: {
           dbAlias: "我是别名",
           dbUrl: 'jdbc:mysql://123.57.128.136/mgenerator?useUnicode=true&characterEncoding=utf8&ssl=true&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull',
@@ -73,8 +75,8 @@
           isLeaf: 'leaf'
         },
         dbData: [],
-        databaseMsMenuX:0,
-        databaseMsMenuY:0,
+        databaseMsMenuX: 0,
+        databaseMsMenuY: 0,
 
       }
     },
@@ -82,7 +84,7 @@
     created() {
       this.getDatabaseMsNodes()
     },
-    components:{
+    components: {
       TableMgConfig
     },
     methods: {
@@ -96,32 +98,42 @@
           }
         }
       },
-      nodeContextMenuHandler(event,node){
-        this.contextMenuNode = node
-        this.databaseMsMenuX=event.clientX;
-        this.databaseMsMenuY=event.clientY
-
-        if(node.leaf === true){
-          if(this.showTableMgConfig){
-            this.showDatabaseMsMenu = false;
-            this.$refs.TableMgConfig.tableName = node.nodeName
+      checkHandler(node, checkedInfo) {
+        let checked = checkedInfo.checkedNodes.filter(item => item.nodeName == node.nodeName).length == 1;
+        let tableName = node.nodeName;
+        if (checked) {
+          let dbId = node.nodeInfo.dbId;
+          this.$store.dispatch("getMgConfig", {tableName, dbId})
+          if (this.showTableMgConfig) {
+            this.$refs.TableMgConfig.tableName = tableName
             this.$refs.TableMgConfig.showTableMgConfigDialog = true
           }
-        }else {
+        } else {
+          this.$store.dispatch("removeMgConfigFromState", tableName)
+        }
+      },
+      nodeContextMenuHandler(event, node) {
+        this.contextMenuNode = node
+        this.databaseMsMenuX = event.clientX;
+        this.databaseMsMenuY = event.clientY
+        if (node.leaf === true) {
+          this.showDatabaseMsMenu = false;
+          this.$refs.TableMgConfig.tableName = node.nodeName
+          this.$refs.TableMgConfig.showTableMgConfigDialog = true
+        } else {
           this.$refs.TableMgConfig.showTableMgConfigDialog = false
           this.showDatabaseMsMenu = true;
         }
-
       },
-      addDatabaseMsMenuHandler(){
+      addDatabaseMsMenuHandler() {
         this.showDatabaseMsMenu = false;
-        this.showAddDatabaseMsDialog=true;
+        this.showAddDatabaseMsDialog = true;
       },
-      editDatabaseMsMenuHandler(){
+      editDatabaseMsMenuHandler() {
         this.showDatabaseMsMenu = false;
-        this.showAddDatabaseMsDialog=true;
+        this.showAddDatabaseMsDialog = true;
       },
-      deleteDatabaseMsMenuHandler(){
+      deleteDatabaseMsMenuHandler() {
         let node = this.contextMenuNode;
         this.showDatabaseMsMenu = false;
         this.$confirm(`确认删除${node.label}?`, '提示', {
@@ -129,9 +141,9 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          Api.deleteDatabaseMs(node.id).then(res=>{
+          Api.deleteDatabaseMs(node.id).then(res => {
             this.$message({
-              type: res.success?'success':'error',
+              type: res.success ? 'success' : 'error',
               message: res.data
             });
           })
@@ -145,40 +157,26 @@
       testConnect() {
         Api.testConnect(this.db).then(res => {
           this.$message({
-            message:res.data,
-            type:res.success?"success":"error",
-            duration:1000,
-            showClose:true
+            message: res.data,
+            type: res.success ? "success" : "error",
+            duration: 1000,
+            showClose: true
           });
         })
       },
       addDatabaseMs() {
         Api.addDatabaseMs(this.databaseMs).then(res => {
           this.getDatabaseMsNodes()
-          if(res.success){
+          if (res.success) {
             this.$message({
-              message:"新增成功",
-              type:"success",
-              duration:1000,
-              showClose:true
+              message: "新增成功",
+              type: "success",
+              duration: 1000,
+              showClose: true
             });
             this.showAddDatabaseMsDialog = false;
           }
         })
-      },
-      checkHandler(node, checkedInfo) {
-        let checked = checkedInfo.checkedNodes.filter(item => item.nodeName == node.nodeName).length == 1;
-        let tableName = node.nodeName;
-        if (checked) {
-          let dbId = node.nodeInfo.dbId;
-          this.$store.dispatch("getMgConfig",{tableName, dbId})
-          if(this.showTableMgConfig){
-            this.$refs.TableMgConfig.tableName=tableName
-            this.$refs.TableMgConfig.showTableMgConfigDialog=true
-          }
-        } else {
-          this.$store.dispatch("removeMgConfigFromState",tableName)
-        }
       },
       async getDatabaseMsNodes() {
         const result = await Api.getDatabaseMsNodes();
@@ -186,24 +184,27 @@
           this.dbData = result.data
         }
       },
-      getMousePos(event) {
-        var e = event || window.event;
-        return {"x": e.clientX, "y": clientY};
-      }
 
-  }
+
+    }
   }
 </script>
 
 <style scoped>
 
-  .xxx{
-  /*设置内部填充为0，几个布局元素之间没有间距*/
+  .xxx {
+    /*设置内部填充为0，几个布局元素之间没有间距*/
     padding: 0px;
-  /*外部间距也是如此设置*/
+    /*外部间距也是如此设置*/
     margin: 0px;
-  /*统一设置高度为100%*/
+    /*统一设置高度为100%*/
     height: 100%;
+  }
+
+  .menu-button {
+    display: block;
+    margin-top: 10px;
+    margin-left: 30px
   }
 
 
